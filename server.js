@@ -1,24 +1,27 @@
-var logger = require("morgan");
-var mongoose = require("mongoose");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 
-var express = require("express");
-var app = express();
+const express = require("express");
+const app = express();
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-var exphbs = require("express-handlebars");
+const exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-var PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 3000;
 
-// mongoose.connect("mongodb://localhost/unit18Populater", {
-//   useNewUrlParser: true,
-// });
+mongoose.connect("mongodb://localhost/news-scraper-supreme");
+const db = mongoose.connection;
 
-app.listen(PORT, function () {
-  console.log("App running on port " + PORT + "!");
-});
+db.on(
+  "error",
+  console.error.bind(console, "Connection error: Not connecting to Mongoose.")
+);
+db.once("open", () => console.log("Connected to Mongoose!"));
+
+app.listen(PORT, () => console.log("App running on port " + PORT + "!"));
