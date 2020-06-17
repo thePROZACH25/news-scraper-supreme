@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-// var path = require("path");
 
 var axios = require("axios");
 var cheerio = require("cheerio");
@@ -8,14 +7,14 @@ var cheerio = require("cheerio");
 var Comment = require("../models/comments");
 var Article = require("../models/articles");
 
-// router.get("/", (req, res) => res.redirect("/articles"));
-
-router.get("/", (req, res) => res.send("Welcome"));
+router.get("/", function (req, res) {
+    res.render("index")
+});
 
 router.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.crunchyroll.com/news").then(function (response) {
-      console.log(responce)
+    console.log(responce);
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     let $ = cheerio.load(response.data);
 

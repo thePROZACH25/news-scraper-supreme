@@ -10,12 +10,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
+var routes = require("./controller/controller");
+app.use(routes);
+
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-var routes = require("./controller/controller");
-app.use(routes);
 
 mongoose.connect("mongodb://localhost/newsScraper", { useNewUrlParser: true });
 var db = mongoose.connection;
