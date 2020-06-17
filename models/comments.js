@@ -11,5 +11,5 @@ let CommentSchema = new Schema({
   },
 });
 
-const Comment = mongoose.model("Comment", CommentSchema);
+let Comment = mongoose.model("Comment", CommentSchema);
 module.exprts = Comment;

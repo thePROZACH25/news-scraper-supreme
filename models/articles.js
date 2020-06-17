@@ -18,5 +18,5 @@ let ArticleSchema = new Schema({
   ],
 });
 
-const Article = mongoose.model("Article", ArticleSchema);
+let Article = mongoose.model("Article", ArticleSchema);
 module.exprts = Article;
