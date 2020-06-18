@@ -14,18 +14,20 @@ router.get("/", function (req, res) {
 router.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.crunchyroll.com/news").then(function (response) {
-    console.log(responce);
+    
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     let $ = cheerio.load(response.data);
+   
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function () {
+    $("li h2").each(function () {
       // Save an empty result object
       let result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).children("a").text();
       result.link = $(this).children("a").attr("href");
+      console.log(result)
 
       // Create a new Article using the `result` object built from scraping
       Article.create(result)
