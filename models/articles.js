@@ -19,4 +19,4 @@ let ArticleSchema = new Schema({
 });
 
 let Article = mongoose.model("Article", ArticleSchema);
-module.exprts = Article;
+module.exports = Article;
