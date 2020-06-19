@@ -8,7 +8,7 @@ var db = require("../models");
 
 // Loads home page
 router.get("/", function (req, res) {
-  res.render("index");
+  res.redirect("/articles");
 });
 
 router.get("/scrape", function (req, res) {
@@ -39,8 +39,20 @@ router.get("/scrape", function (req, res) {
     });
 
     // Send a message to the client
-    res.send("Scrape Complete");
+    res.redirect("/");
   });
+});
+
+router.get("/articles", function (req, res) {
+  db.Article.find({})
+    .sort({ _id: -1 })
+    .then(function (dbArticle) {
+      var artcl = { article: dbArticle };
+      res.render("index", artcl);
+    })
+    .catch(function (err) {
+      res.send(err);
+    });
 });
 
 router.get("/articles-json", function (req, res) {
@@ -94,13 +106,46 @@ router.post("/articles-json/:id", function (req, res) {
     });
 });
 
-router.get("/clearAll", function(req,res){
-    db.Article.remove({})
-    .then(function(){
-        res.send("the Article is all cleared");
-    }).catch(function(err){
-        console.log(err)
+router.get("/clearAll", function (req, res) {
+  db.Article.remove({})
+    .then(function () {
+      res.redirect("/");
     })
-})
+    .catch(function (err) {
+      res.json(err);
+    });
+});
+
+router.get("/readArticle/:id", function (req, res) {
+  var articleId = req.params.id;
+  var hbsObj = {
+    article: [],
+    body: [],
+  };
+
+  Article.findOne({ _id: articleId })
+    .populate("comment")
+    .exec(function (err, doc) {
+      if (err) {
+        console.log("Error: " + err);
+      } else {
+        hbsObj.article = doc;
+        var link = doc.link;
+        request(link, function (error, response, html) {
+          var $ = cheerio.load(html);
+
+          $(".l-col__main").each(function (i, element) {
+            hbsObj.body = $(this)
+              .children(".c-entry-content")
+              .children("p")
+              .text();
+
+            res.render("article", hbsObj);
+            return false;
+          });
+        });
+      }
+    });
+});
 
 module.exports = router;
