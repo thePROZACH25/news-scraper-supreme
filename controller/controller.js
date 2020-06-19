@@ -94,4 +94,13 @@ router.post("/articles-json/:id", function (req, res) {
     });
 });
 
+router.get("/clearAll", function(req,res){
+    db.Article.remove({})
+    .then(function(){
+        res.send("the Article is all cleared");
+    }).catch(function(err){
+        console.log(err)
+    })
+})
+
 module.exports = router;
